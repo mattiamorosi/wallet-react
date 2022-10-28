@@ -1,0 +1,33 @@
+.tinyLogo {
+    width: 260px;
+    height: 260px;
+}
+
+.viewStyle {
+    padding: 50px 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    vertical-align: center;
+    justify-content: space-between;
+    background-color: white;
+}
+
+.login_button {
+    color: white;
+    background-color: black;
+    align-self: center;
+    border-radius:28px;
+    display:inline-block;
+    font-size:20px;
+    padding:16px 50px;
+}
+
+.inputField {
+    border-width: 2px;
+    border-color: black;
+    border-radius: 30px;
+    margin-bottom: 10px;
+    padding-left: 10px;
+    font-size: 21px;
+}
