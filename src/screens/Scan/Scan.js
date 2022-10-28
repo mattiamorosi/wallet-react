@@ -1,47 +1,45 @@
 import React, {useState, useEffect} from 'react';
 import {BarcodeScanner} from '@capacitor-community/barcode-scanner';
 import {Card, Container} from "@material-ui/core";
-//import axios from "axios";
-//import socket from "socket.io-client";
 import {useAlert} from "react-alert";
 import "./Scan.css"
-import {TopBar} from "./TopBar";
+import {TopBar} from "../TopBar/TopBar";
+import axios from "axios";
+import {readFile, writeFile} from "../../utils/filesystemutils";
+import socket from "socket.io-client";
+import {CrossInCircle, Hide, Show, TickInCircle} from "../../icons/icons";
 
-export const Scan = ({prevScreen}) => {
+export const Scan = ({user}) => {
     const [result, setResult] = useState();
+    const [scanning, setScanning] = useState(false);
     const [verifying, setVerifying] = useState(false);
     const alert = useAlert();
-    /*const joinSocket = (roomId: string) => {
-          const sock = socket(share_service, { query: { roomId } });
-          sock.emit("enter", "enter");
-          setVerifying(() => true);
-          sock.on("shareCred", (data) => {
-              setVerifying(() => false);
-              setResult(() => data);
-          });
-      };
-  */
+    const share_service = "http://192.168.1.23:6969";//5000?
+
+    const joinSocket = (roomId) => {
+        const sock = socket(share_service, { query: { roomId } });
+        sock.emit("enter", "enter");
+        setVerifying(() => true);
+        sock.on("shareCred", (data) => {
+            setVerifying(() => false);
+            setResult(() => data);
+        });
+    };
+
     const startScan = async () => {
-        setVerifying(true);
-        alert.show('Inside startScan function!');
+        setScanning(true);
 
         // Check camera permission
-        // This is just a simple example, check out the better checks below
         await BarcodeScanner.checkPermission({ force: true });
-
-        // make background of WebView transparent
-        // note: if you are using ionic this might not be enough, check below
-        //await BarcodeScanner.hideBackground();
 
         const result = await BarcodeScanner.startScan();
 
         if (result.hasContent) {
-            //TODO: fare qualcosa con result.content
-            setVerifying(false);
+            setScanning(false);
             await stopScan();
         }
-        //const scan = JSON.parse(result.text);
-    }; /*
+        const scan = JSON.parse(result.content);
+
         if (scan.type === "didScan") {
             const config = {
                 headers: {
@@ -49,7 +47,7 @@ export const Scan = ({prevScreen}) => {
                     Authorization: `Bearer ${scan.token}`,
                 },
             };
-            const { data }: any = await axios.post(
+            const { data } = await axios.post(
                 `${scan.api}/api/users/assign-did`,
                 { did: user.user.doc.id },
                 config
@@ -78,54 +76,30 @@ export const Scan = ({prevScreen}) => {
             joinSocket(scan.roomId);
         }
     };
-*/
+
     const stopScan = async () => {
         await BarcodeScanner.showBackground();
         await BarcodeScanner.stopScan();
     };
-    return (/*
+
+    return (
         <Container>
             <div className="scan">
-                {!verifying && !result ? (
-                    <Card>
-                        <button onClick={startScan}>
-                            START SCAN
-                        </button>
-                    </Card>
-                ) : !result && verifying ? (
-                    <Card extend={true}>
+                {!verifying && !result && !scanning ? (
+                    <><div className="scan_container"><button className="scan_button" onClick={startScan}>START SCAN</button></div></>
+                ) : !result && verifying && !scanning ? (
+                    <div>
+                        <TopBar/>
                         <h2 style={{ textAlign: "center" }}>Verifying...</h2>
-                    </Card>
-                ) : !verifying && result ? (
-                    <Card extend={true}>
-                        <React.Fragment>
-                            <div className="issuer-logo">
-                                {result.vc.id.split("//")[1][0].toUpperCase()}
-                            </div>
-                            <div className="issuer-title">
-                                {result.vc.id.split("//")[1].split("/")[0]}
-                            </div>
-                            <div className="cred-title">{result.vc.type[1]}</div>
-                            {Object.keys(result.vc.credentialSubject).map((key, index) => (
-                                <div key={index} className="cred-prop">
-                                    <div className="cred-prop-data">
-                                        <div className="property">{key}</div>
-                                        <div className="value">
-                                            {result.vc.credentialSubject[key]}
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
+                    </div>
+                ) : !verifying && result && !scanning ? (
+                    <view className="mainView">
 
-                        </React.Fragment>
-                    </Card>
+                    </view>
                 ) : (
                     <div></div>
                 )}
             </div>
-        </Container>*/
-        <>
-            {!verifying && <><TopBar/><div className="scan_container"><button className="scan_button" onClick={startScan}>START SCAN</button></div></>}
-        </>
+        </Container>
     )
 };

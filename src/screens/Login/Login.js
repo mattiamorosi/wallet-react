@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {useNavigate} from 'react-router';
 import * as bcrypt from 'bcryptjs';
 import TextField from "@material-ui/core/TextField";
-import logo from './logo.png'
+import logo from '../logo.png'
 import "./Login.css";
 import {useAlert} from "react-alert";
 
@@ -44,7 +44,7 @@ const Login = ({setPrevScreen, userInfo}) => {
             <img
                 className="tinyLogo"
                 src={logo}
-             alt={"Logo"}/>
+                alt={"Logo"}/>
             <div>
                 <input
                     onChange={(e) => setUser(e.target.value)}
@@ -59,9 +59,7 @@ const Login = ({setPrevScreen, userInfo}) => {
                 />
             </div>
             <button
-                onClick={() => {
-                    handleLogin().catch(null);
-                }}
+                onClick={handleLogin}
                 className="login_button"
             >LOGIN</button>
         </div>

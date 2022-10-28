@@ -1,8 +1,10 @@
 import React from 'react';
-import {Verifiable_credential} from './Verifiable_credential';
-import {credentialSubject, Proof} from '../types/Types';
+import {Verifiable_credential} from '../../types/Verifiable_credential';
+import {credentialSubject, Proof} from '../../types/Types';
 import {useNavigate} from 'react-router';
 import "./Cred_list.css"
+import {Directory, Encoding, Filesystem} from "@capacitor/filesystem";
+import {useAlert} from "react-alert";
 // Credentials
 
 export const Cred = vc => {
@@ -23,13 +25,7 @@ export const Cred = vc => {
 
 export const Cred_list = ({vc, setVC, setPrevScreen}) => {
     const navigate = useNavigate();
-    /*const styles = StyleSheet.create({
-        // TODO: insert all the styles here
-        tinyLogo: {
-            width: 60,
-            height: 60,
-        },
-    });*/
+    const alert = useAlert()
 
     // input: list of VC, output: a card for each VC
     return (
@@ -38,29 +34,19 @@ export const Cred_list = ({vc, setVC, setPrevScreen}) => {
                 return (
                     <div
                         key={i}
-                        style={{
-                            marginEnd: 1,
-                            marginStart: 1,
-                            marginTop: 5,
-                            marginBottom: 5,
-                            padding: 12.5,
-                            borderRadius: 10,
-                            position: 'relative',
-                            background: '#495f6f',
-                            flexDirection: 'row',
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            borderColor: '#000000',
-                            borderWidth: 1,
+                        className="main_div"
+                        onClick={() => {
+                            setVC(u);
+                            setPrevScreen('/credentials');
+                            navigate('/cred');
                         }}>
-                        <touchableOpacity
+                        <div
                             onClick={() => {
                                 setVC(u);
                                 setPrevScreen('/credentials');
                                 navigate('/cred');
                             }}>
-                            <text
+                            <h3
                                 style={{
                                     color: '#000000',
                                     fontFamily: 'arial, sans-serif',
@@ -68,8 +54,8 @@ export const Cred_list = ({vc, setVC, setPrevScreen}) => {
                                     fontWeight: 'bold',
                                 }}>
                                 {u.credentialSubject.credentialIssuer}
-                            </text>
-                            <text
+                            </h3>
+                            <h3
                                 style={{
                                     color: '#000000',
                                     fontFamily: 'arial, sans-serif',
@@ -77,13 +63,9 @@ export const Cred_list = ({vc, setVC, setPrevScreen}) => {
                                     fontWeight: 'bold',
                                 }}>
                                 {u.credentialSubject.credentialType}
-                            </text>
-                        </touchableOpacity>
-                        <img
-                            source={{
-                                uri: u.issuerLogo,
-                            }}
-                        />
+                            </h3>
+                        </div>
+                        <h1 className="logo">{u.credentialSubject.credentialIssuer[0]}</h1>
                     </div>
                 );
             })}
@@ -91,9 +73,9 @@ export const Cred_list = ({vc, setVC, setPrevScreen}) => {
                 <button
                     className="newScan_button"
                     onClick={() => {
-                    setPrevScreen('/credentials');
-                    navigate('/scan');
-                }}>Perform a new scan!</button>
+                        setPrevScreen('/credentials');
+                        navigate('/scan');
+                    }}>Perform a new scan!</button>
             </div>
         </div>
     );

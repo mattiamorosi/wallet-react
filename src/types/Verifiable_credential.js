@@ -1,5 +1,5 @@
 import React from 'react';
-import {credentialSubject, Proof} from '../types/Types';
+import {credentialSubject, Proof} from './Types';
 /*
  * VC:
  *   - id;
